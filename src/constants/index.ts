@@ -22,7 +22,7 @@ export const JOB_LISTING_COLUMNS: string[] = [
   "Needs",
 ];
 
-export const JOB_APPLICANT_COLUMNS: string[] = ["Name"];
+export const JOB_APPLICANT_COLUMNS: string[] = ["Name", "Applied Date"];
 
 export const JOB_APPLICANT_DATA = [
   {
@@ -35,8 +35,8 @@ export const JOB_LISTING_DATA = [
   {
     roles: "Software Engineer",
     status: "Live",
-    datePosted: "12 Aug 2023",
-    dueDate: "12 Sep 2023",
+    datePosted: "21 Jan 2024",
+    dueDate: "21 Feb 2024",
     jobType: "Full-Time",
     applicants: 1,
     needs: 10,

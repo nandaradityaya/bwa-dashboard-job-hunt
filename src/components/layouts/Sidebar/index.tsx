@@ -1,4 +1,4 @@
-"use client";
+"use client"; // tandai sebagai component client
 
 import { Button } from "@/components/ui/button";
 import React, { FC } from "react";
