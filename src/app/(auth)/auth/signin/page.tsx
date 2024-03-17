@@ -15,8 +15,8 @@ import Link from "next/link";
 import React, { FC } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-// import { signIn } from "next-auth/react";
-// import { useToast } from "@/components/ui/use-toast";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 interface SignInPageProps {}
@@ -26,27 +26,30 @@ const SignInPage: FC<SignInPageProps> = ({}) => {
     resolver: zodResolver(signInFormSchema),
   });
 
-  // const { toast } = useToast();
+  const { toast } = useToast();
 
   const router = useRouter();
 
   const onSubmit = async (val: z.infer<typeof signInFormSchema>) => {
-    // const authenticated = await signIn("credentials", {
-    //   ...val,
-    //   redirect: false,
-    // });
+    // ambil credential dan spread valuenya (email & password)
+    const authenticated = await signIn("credentials", {
+      ...val,
+      redirect: false,
+    });
 
-    // if (authenticated?.error) {
-    //   toast({
-    //     title: "Error",
-    //     description: "Email or Password maybe wrong",
-    //   });
+    if (authenticated?.error) {
+      toast({
+        title: "Error",
+        description: "Email or Password maybe wrong",
+      });
 
-    //   return;
-    // }
+      return;
+    }
 
-    // await router.push("/");
-    console.log(val);
+    // console.log(authenticated);
+
+    await router.push("/");
+    // console.log(val);
   };
 
   return (
