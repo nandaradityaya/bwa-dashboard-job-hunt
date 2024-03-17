@@ -2,12 +2,10 @@ import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
-// import Applicants from "@/components/organisms/Applicants";
-// import JobDetail from "@/components/organisms/JobDetail";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Applicants from "@/components/organisms/Applicants";
 import JobDetail from "@/components/organisms/JobDetail";
-// import prisma from "../../../../../lib/prisma";
+import prisma from "../../../../../lib/prisma";
 
 type paramsType = {
   id: string;
@@ -18,26 +16,29 @@ interface JobDetailPageProps {
 
 export const revalidate = 0;
 
-// async function getDetailJob(id: string) {
-// 	const job = await prisma.job.findFirst({
-// 		where: {
-// 			id: id,
-// 		},
-// 		include: {
-// 			applicant: {
-// 				include: {
-// 					user: true,
-// 				},
-// 			},
-// 			CategoryJob: true,
-// 		},
-// 	});
+// params id dan type string
+async function getDetailJob(id: string) {
+  const job = await prisma.job.findFirst({
+    where: {
+      id: id,
+    },
+    include: {
+      applicant: {
+        include: {
+          user: true,
+        },
+      },
+      CategoryJob: true,
+    },
+  });
 
-// 	return job;
-// }
+  return job;
+}
 
 const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
-  // const job = await getDetailJob(params.id);
+  const job = await getDetailJob(params.id); // ambil dari params.id
+  // console.log(params.id);
+  // console.log(job);
 
   return (
     <div>
@@ -48,14 +49,10 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
           </Link>
         </div>
         <div>
-          <div className="text-2xl font-semibold mb-1">
-            {/* {job?.roles} */}
-            Brand Designer
-          </div>
+          <div className="text-2xl font-semibold mb-1">{job?.roles}</div>
           <div>
-            Design . Full-Time . 1/10 Hired
-            {/* {job?.CategoryJob?.name} . {job?.jobType} .{" "}
-						{job?.applicants}/{job?.needs} Hired */}
+            {job?.CategoryJob?.name} . {job?.jobType} . {job?.applicants}/
+            {job?.needs} Hired
           </div>
         </div>
       </div>
@@ -66,12 +63,10 @@ const JobDetailPage: FC<JobDetailPageProps> = async ({ params }) => {
           <TabsTrigger value="jobDetails">Job Details</TabsTrigger>
         </TabsList>
         <TabsContent value="applicants">
-          {/* <Applicants applicants={job?.applicant} /> */}
-          <Applicants />
+          <Applicants applicants={job?.applicant} />
         </TabsContent>
         <TabsContent value="jobDetails">
-          {/* <JobDetail detail={job} /> */}
-          <JobDetail />
+          <JobDetail detail={job} />
         </TabsContent>
       </Tabs>
     </div>

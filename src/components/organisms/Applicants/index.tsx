@@ -10,18 +10,18 @@ import {
 } from "@/components/ui/table";
 import { JOB_APPLICANT_COLUMNS, JOB_APPLICANT_DATA } from "@/constants";
 import ButtonActionTable from "../ButtonActionTable";
-// import { Applicant, User } from "@prisma/client";
+import { Applicant, User } from "@prisma/client";
 
-// type applicantType = {
-// 	user: User | null;
-// } & Applicant;
+type applicantType = {
+  user: User | null;
+} & Applicant;
 
 interface ApplicantsProps {
-  // applicants: applicantType[] | undefined;
+  applicants: applicantType[] | undefined; // kasih opsi undefined, jadi datanya bisa undefined
 }
 
 // const Applicants: FC<ApplicantsProps> = ({ applicants }) => {
-const Applicants: FC<ApplicantsProps> = ({}) => {
+const Applicants: FC<ApplicantsProps> = ({ applicants }) => {
   return (
     <Table>
       <TableHeader>
@@ -33,28 +33,19 @@ const Applicants: FC<ApplicantsProps> = ({}) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {JOB_APPLICANT_DATA.map((item: any, i: number) => (
-          <TableRow key={item.name + i}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.appliedDate}</TableCell>
-            <TableCell>
-              <ButtonActionTable url={"/job-detail/1"} />
-              {/* <ButtonActionTable url={`/job-detail/${item.id}`} /> */}
-            </TableCell>
-          </TableRow>
-        ))}
-        {/* {applicants && (
-					<>
-						{applicants.map((item: any, i: number) => (
-							<TableRow key={item.id + i}>
-								<TableCell>{item.user.name}</TableCell>
-								<TableCell>
-									<ButtonActionTable url="" />
-								</TableCell>
-							</TableRow>
-						))}
-					</>
-				)} */}
+        {/* jika applicantsnya ada maka munculin ini */}
+        {applicants && (
+          <>
+            {applicants.map((item: any, i: number) => (
+              <TableRow key={item.id + i}>
+                <TableCell>{item.user.name}</TableCell>
+                <TableCell>
+                  <ButtonActionTable url="" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   );

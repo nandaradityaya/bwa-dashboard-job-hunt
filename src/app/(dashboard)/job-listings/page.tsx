@@ -58,28 +58,6 @@ const JobListingsPage: FC<JobListingsPageProps> = async ({}) => {
               <TableHead>Action</TableHead>
             </TableRow>
           </TableHeader>
-          {/* <TableBody>
-            {JOB_LISTING_DATA.map((item: any, i: number) => (
-              <TableRow key={item.roles + i}>
-                <TableCell>{item.roles}</TableCell>
-                <TableCell>
-                  <Badge variant="destructive">{item.status}</Badge>
-                </TableCell>
-                <TableCell>{item.datePosted}</TableCell>
-                <TableCell>{item.dueDate}</TableCell>
-                <TableCell>
-                  <Badge variant="outline">{item.jobType}</Badge>
-                </TableCell>
-                <TableCell>{item.applicants}</TableCell>
-                <TableCell>
-                  {item.applicants} / {item.needs}
-                </TableCell>
-                <TableCell>
-                  <ButtonActionTable url={"/job-detail/1"} />
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody> */}
           <TableBody>
             {jobs.map((item: Job, i: number) => (
               <TableRow key={item.roles + i}>
