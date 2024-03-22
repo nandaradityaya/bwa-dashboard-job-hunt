@@ -26,8 +26,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-// import { useSession } from "next-auth/react";
-// import { useToast } from "@/components/ui/use-toast";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 interface DialogAddTeamProps {}
@@ -37,41 +37,38 @@ const DialogAddTeam: FC<DialogAddTeamProps> = ({}) => {
     resolver: zodResolver(teamFormSchema),
   });
 
-  // const { data: session } = useSession();
-  //   const { toast } = useToast();
+  const { data: session } = useSession();
+  const { toast } = useToast();
   const router = useRouter();
 
   const onSubmit = async (val: z.infer<typeof teamFormSchema>) => {
-    console.log(val);
+    try {
+      // body untuk di kirim ke API
+      const body = {
+        ...val,
+        companyId: session?.user.id,
+      };
+
+      await fetch("/api/company/teams", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body), // kirim body ke API
+      });
+
+      toast({
+        title: "Success",
+        description: "Add member success",
+      });
+
+      await router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+      });
+      console.log(error);
+    }
   };
-
-  // const onSubmit = async (val: z.infer<typeof teamFormSchema>) => {
-  // 	try {
-  // 		const body = {
-  // 			...val,
-  // 			companyId: session?.user.id,
-  // 		};
-
-  // 		await fetch("/api/company/teams", {
-  // 			method: "POST",
-  // 			headers: { "Content-Type": "application/json" },
-  // 			body: JSON.stringify(body),
-  // 		});
-
-  // 		toast({
-  // 			title: "Success",
-  // 			description: "Add member success",
-  // 		});
-
-  // 		await router.refresh();
-  // 	} catch (error) {
-  // 		toast({
-  // 			title: "Error",
-  // 			description: "Please try again",
-  // 		});
-  // 		console.log(error);
-  // 	}
-  // };
 
   return (
     <Dialog>

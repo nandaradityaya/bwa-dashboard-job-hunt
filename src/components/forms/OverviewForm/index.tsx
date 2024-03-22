@@ -35,91 +35,88 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
+import { cn, fetcher } from "@/lib/utils";
 import InputSkills from "@/components/organisms/InputSkills";
 import CKEditor from "@/components/organisms/CKEditor";
-// import useSWR from "swr";
-// import { Companyoverview, Industry } from "@prisma/client";
-// import { supabaseUpdateFile, supabaseUploadFile } from "@/lib/supabase";
-// import { useSession } from "next-auth/react";
-// import { useToast } from "@/components/ui/use-toast";
+import useSWR from "swr";
+import { Companyoverview, Industry } from "@prisma/client";
+import { supabaseUpdateFile, supabaseUploadFile } from "@/lib/supabase";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 interface OverviewFormProps {
-  // detail: Companyoverview | undefined;
+  detail: Companyoverview | undefined;
 }
 
-const OverviewForm: FC<OverviewFormProps> = ({}) => {
+const OverviewForm: FC<OverviewFormProps> = ({ detail }) => {
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false); // ckEditor butuh loaded
 
-  // const { data: session } = useSession();
-  // const { toast } = useToast();
+  const { data: session } = useSession();
+  const { toast } = useToast();
   const router = useRouter();
 
-  // const { data } = useSWR<Industry[]>("/api/company/industry", fetcher);
+  const { data } = useSWR<Industry[]>("/api/company/industry", fetcher);
+  // console.log(data);
 
   const form = useForm<z.infer<typeof overviewFormSchema>>({
     resolver: zodResolver(overviewFormSchema),
-    // defaultValues: {
-    // 	dateFounded: detail?.dateFounded,
-    // 	description: detail?.description,
-    // 	employee: detail?.employee,
-    // 	image: detail?.image,
-    // 	industry: detail?.industry,
-    // 	location: detail?.location,
-    // 	name: detail?.name,
-    // 	techStack: detail?.techStack,
-    // 	website: detail?.website,
-    // },
+    defaultValues: {
+      dateFounded: detail?.dateFounded,
+      description: detail?.description,
+      employee: detail?.employee,
+      image: detail?.image,
+      industry: detail?.industry,
+      location: detail?.location,
+      name: detail?.name,
+      techStack: detail?.techStack,
+      website: detail?.website,
+    },
   });
 
-  const onSubmit = (val: z.infer<typeof overviewFormSchema>) => {
-    console.log(val);
+  const onSubmit = async (val: z.infer<typeof overviewFormSchema>) => {
+    try {
+      let filename = "";
+
+      console.log("asasasa");
+
+      if (typeof val.image === "object") {
+        const uploadImg = await supabaseUploadFile(val.image, "company"); // value image, bucket company
+        // return filename
+        filename = uploadImg.filename;
+      } else {
+        // jika bukan object berarti imagenya sudah terupload maka set filename = val.image
+        filename = val.image;
+      }
+
+      // body kirim ke API
+      const body = {
+        ...val,
+        image: filename,
+        companyId: session?.user.id, // butuh session
+      };
+
+      await fetch("/api/company/overview", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      toast({
+        title: "Success",
+        description: "Edit profile success",
+      });
+
+      router.refresh();
+    } catch (error) {
+      await toast({
+        title: "Error",
+        description: "Please try again",
+      });
+
+      console.log(error);
+    }
   };
-
-  // const onSubmit = async (val: z.infer<typeof overviewFormSchema>) => {
-  // 	try {
-  // 		let filename = "";
-
-  // 		console.log("asasasa");
-
-  // 		if (typeof val.image === "object") {
-  // 			const uploadImg = await supabaseUploadFile(
-  // 				val.image,
-  // 				"company"
-  // 			);
-  // 			filename = uploadImg.filename;
-  // 		} else {
-  // 			filename = val.image;
-  // 		}
-
-  // 		const body = {
-  // 			...val,
-  // 			image: filename,
-  // 			companyId: session?.user.id,
-  // 		};
-
-  // 		await fetch("/api/company/overview", {
-  // 			method: "POST",
-  // 			headers: { "Content-Type": "application/json" },
-  // 			body: JSON.stringify(body),
-  // 		});
-
-  // 		toast({
-  // 			title: "Success",
-  // 			description: "Edit profile success",
-  // 		});
-
-  // 		router.refresh();
-  // 	} catch (error) {
-  // 		await toast({
-  // 			title: "Error",
-  // 			description: "Please try again",
-  // 		});
-
-  // 		console.log(error);
-  // 	}
-  // };
 
   useEffect(() => {
     setEditorLoaded(true);
@@ -259,18 +256,11 @@ const OverviewForm: FC<OverviewFormProps> = ({}) => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {/* {data?.map((item: Industry) => (
+                          {data?.map((item: Industry) => (
                             <SelectItem key={item.id} value={item.name}>
                               {item.name}
                             </SelectItem>
-                          ))} */}
-                          {EMPLOYEE_OPTIONS.map(
-                            (item: optionType, i: number) => (
-                              <SelectItem key={item.id + i} value={item.id}>
-                                {item.label}
-                              </SelectItem>
-                            )
-                          )}
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

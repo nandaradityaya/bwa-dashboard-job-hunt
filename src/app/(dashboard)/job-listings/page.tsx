@@ -27,6 +27,7 @@ async function getDataJobs() {
   const session = await getServerSession(authOptions);
 
   // langsung hit ke prismanya saja karena ini pake server side, jadi gaperlu hit API
+  // findMany karna kita mau mencari beberapa job yg ada di perusahaan tersebut
   const jobs = prisma.job.findMany({
     // dimana companyId berdasarkan session
     where: {

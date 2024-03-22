@@ -1,37 +1,38 @@
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import OverviewForm from "@/components/forms/OverviewForm";
 import SocialMediaForm from "@/components/forms/SocialMediaForm";
 import TeamForm from "@/components/forms/TeamForm";
-// import SocialMediaForm from "@/components/forms/SocialMediaForm";
-// import TeamForm from "@/components/forms/TeamForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import React, { FC } from "react";
-// import prisma from "../../../../lib/prisma";
+import prisma from "../../../../lib/prisma";
 
 interface SettingsPageProps {}
 
-// export const revalidate = 0;
+export const revalidate = 0;
 
-// async function getDetailCompany() {
-//   const session = await getServerSession(authOptions);
+// get routing secara server side
+async function getDetailCompany() {
+  // ambil session
+  const session = await getServerSession(authOptions);
 
-//   const company = await prisma.company.findFirst({
-//     where: { id: session?.user.id },
-//     include: {
-//       Companyoverview: true,
-//       CompanySocialMedia: true,
-//       CompanyTeam: true,
-//     },
-//   });
+  // find first karna kita mau mencari satu entitas dari table company berdasarkan id session user
+  const company = await prisma.company.findFirst({
+    where: { id: session?.user.id },
+    include: {
+      Companyoverview: true,
+      CompanySocialMedia: true,
+      CompanyTeam: true,
+    },
+  });
 
-//   return company;
-// }
+  return company;
+}
 
 const SettingsPage: FC<SettingsPageProps> = async ({}) => {
-  //   const company = await getDetailCompany();
+  const company = await getDetailCompany();
 
-  //   console.log(company);
+  // console.log(company);
 
   return (
     <div>
@@ -44,16 +45,13 @@ const SettingsPage: FC<SettingsPageProps> = async ({}) => {
           <TabsTrigger value="teams">Teams</TabsTrigger>
         </TabsList>
         <TabsContent value="overview">
-          <OverviewForm />
-          {/* <OverviewForm detail={company?.Companyoverview[0]} /> */}
+          <OverviewForm detail={company?.Companyoverview[0]} />
         </TabsContent>
         <TabsContent value="socialLinks">
-          <SocialMediaForm />
-          {/* <SocialMediaForm detail={company?.CompanySocialMedia[0]} /> */}
+          <SocialMediaForm detail={company?.CompanySocialMedia[0]} />
         </TabsContent>
         <TabsContent value="teams">
-          <TeamForm />
-          {/* <TeamForm teams={company?.CompanyTeam} /> */}
+          <TeamForm teams={company?.CompanyTeam} />
         </TabsContent>
       </Tabs>
     </div>
