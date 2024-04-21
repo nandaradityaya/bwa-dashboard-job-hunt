@@ -9,7 +9,7 @@ import prisma from "../../../../lib/prisma";
 
 interface SettingsPageProps {}
 
-export const revalidate = 0;
+export const revalidate = 0; // revalidate
 
 // get routing secara server side
 async function getDetailCompany() {

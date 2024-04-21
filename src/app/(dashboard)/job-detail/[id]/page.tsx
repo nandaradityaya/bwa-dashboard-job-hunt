@@ -14,7 +14,7 @@ interface JobDetailPageProps {
   params: paramsType;
 }
 
-export const revalidate = 0;
+export const revalidate = 0; // revalidate | gunakan revalidate di halaman yg menggunakan serverside rendering (yg ada getServerSide)
 
 // params id dan type string
 async function getDetailJob(id: string) {

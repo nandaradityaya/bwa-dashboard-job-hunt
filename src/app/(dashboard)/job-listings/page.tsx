@@ -20,7 +20,7 @@ import prisma from "../../../../lib/prisma";
 
 interface JobListingsPageProps {}
 
-export const revalidate = 0;
+export const revalidate = 0; // revalidate
 
 async function getDataJobs() {
   // ambil data berdasarkan session yg login
