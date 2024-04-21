@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Epilogue } from "next/font/google";
 import "../globals.css";
 
@@ -7,6 +8,11 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { redirect } from "next/navigation";
 
 const epilogue = Epilogue({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "BWA Job Hunt",
+  description: "BWA Job Hunt",
+};
 
 export default async function RootLayout({
   children,
